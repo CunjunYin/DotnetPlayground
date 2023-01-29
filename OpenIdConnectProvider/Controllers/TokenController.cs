@@ -13,9 +13,13 @@ namespace OpenIdConnectProvider.Controllers
         [HttpPost(ResourceUris.V1.requestAccessToken)]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<String> tokenExchange()
+        public async Task<String> AccessTokenExchange(string code)
         {
+            return "a";
+        }
 
+        public async Task<String> RefreshTokenExchange(string token)
+        {
             return "a";
         }
     }

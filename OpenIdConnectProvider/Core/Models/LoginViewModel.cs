@@ -1,14 +1,16 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
-namespace OpenIdConnectProvider.Models
+namespace OpenIdConnectProvider.Core.Models
 {
     public class LoginViewModel: IValidatableObject
     {
         [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Email is not valid email address")]
+        [FromForm(Name = "Username")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+
+        [FromForm(Name = "Password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

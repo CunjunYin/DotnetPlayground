@@ -13,7 +13,7 @@ namespace OpenIdConnectProvider.Controllers
         [HttpGet(ResourceUris.V1.requestResources)]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<String> getResources()
+        public async Task<String> getResources(string accessToken)
         {
 
             return "a";
