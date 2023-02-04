@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using OpenIdConnectProvider.Core.Services;
+using OpenIdConnectProvider.Data;
 
 namespace OpenIdConnectProvider.Core.Models;
+
 
 public class AuthorizationCode: IValidatableObject
 {
@@ -23,8 +26,7 @@ public class AuthorizationCode: IValidatableObject
     [FromQuery(Name = "nonce")]
     public string nonce { get; set; }
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext){
         if(string.IsNullOrWhiteSpace(audience)) {
             yield return new ValidationResult("Empty audience Uri");
         }
@@ -48,10 +50,13 @@ public class AuthorizationCode: IValidatableObject
         if(string.IsNullOrWhiteSpace(nonce)) {
             yield return new ValidationResult("Empty nonce Uri");
         }
+
+        if(new ClientValidator(new Clients()).isValid(this) == false) {
+            yield return new ValidationResult("Invalid client request");
+        }
     }
 
-    public string toString()
-    {
+    public string toString(){
         return  String.Format(
             "audience={0}&client_id={1}&response_type={2}&scope={3}&redirect_uri={4}&nonce={5}",
             audience, client_id, response_type, scope, redirect_uri, nonce

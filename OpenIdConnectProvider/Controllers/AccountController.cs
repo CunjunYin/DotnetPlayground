@@ -47,7 +47,7 @@ namespace OpenIdConnectProvider.Controllers
                 var errorMessage = ModelState.Values.SelectMany(v => v.Errors).First().ErrorMessage;
                 var errorResponse = new ErrorResponse
                 {
-                    Error = ErrorResponseType.InvalidRequest,
+                    Error = ErrorResponseType.invalid_request,
                     ErrorDescription = errorMessage
                 };
 
