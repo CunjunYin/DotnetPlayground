@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OpenIdConnect.Core;
+using OpenIdConnectProvider.Core;
 using OpenIdConnectProvider.Core.Models;
 using OpenIdConnectProvider.Core;
 using OpenIdConnectProvider.Core.Types;
+using OpenIdConnectProvider.Core.Services;
 
 namespace OpenIdConnectProvider.Controllers
 {
@@ -40,7 +41,7 @@ namespace OpenIdConnectProvider.Controllers
         [HttpPost(ResourceUris.V1.login)]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromForm]LoginViewModel model, [FromQuery]AuthorizationCode Omodel)
+        public async Task<IActionResult> Login([FromForm]LoginViewModel user, [FromQuery]AuthorizationCode oAuth)
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +55,18 @@ namespace OpenIdConnectProvider.Controllers
                 return BadRequest(errorResponse.GenerateJsonErrorRespose());
             }
 
-            return Redirect(String.Format("{0}?code={1}", Omodel.redirect_uri, "1234-5678-9012"));
+            return Redirect(String.Format(
+                "{0}?code={1}&state={2}",
+                oAuth.redirect_uri,
+                new AuthenticationCode(
+                    oAuth.client_id,
+                    oAuth.redirect_uri,
+                    "new",
+                    oAuth.scope,
+                    user.Username
+                ).GenerateCode(),
+                "state"
+            ));
         }
 
         protected string LoginHTML(string redirectUri)

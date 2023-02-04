@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OpenIdConnect.Core;
+using OpenIdConnectProvider.Core;
 
 namespace OpenIdConnectProvider.Controllers
 {

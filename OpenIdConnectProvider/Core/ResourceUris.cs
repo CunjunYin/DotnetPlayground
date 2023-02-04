@@ -1,4 +1,4 @@
-﻿namespace OpenIdConnect.Core
+﻿namespace OpenIdConnectProvider.Core
 {
     public class ResourceUris
     {
