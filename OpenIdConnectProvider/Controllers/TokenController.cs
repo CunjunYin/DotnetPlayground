@@ -18,11 +18,11 @@ namespace OpenIdConnectProvider.Controllers
             }
 
             AccessTokenResponse response = new AccessTokenResponse{
-                access_token = "",
+                access_token = ",",
                 refresh_token =  "",
-                expires_in = "",
+                expires_in = DateTime.UtcNow.AddSeconds(300).ToString(),
                 id_token = "", 
-                token_type = "",
+                token_type = "bearer",
             };
 
             return new ContentResult(){

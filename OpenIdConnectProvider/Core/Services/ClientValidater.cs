@@ -1,22 +1,20 @@
-using OpenIdConnectProvider.Data;
 using OpenIdConnectProvider.Core.Models;
-
+using OpenIdConnectProvider.Core.DB;
 
 namespace OpenIdConnectProvider.Core.Services;
 public class ClientValidator: IClientValidator
 {
-    private IClients _clients;
-    public ClientValidator(IClients clients){
-        _clients = clients;
+    public readonly EFCoreInMemoryDb db;
+    public ClientValidator(EFCoreInMemoryDb db){
+        this.db = db;
     }
 
-    public ClientValidator(Clients clients){
-        _clients = clients;
-    }
-
-    public bool isValid(AuthorizationCode model){
+    public bool isValid(AuthorizationCodeModel model){
         // Validate client exist
-        Client client = _clients.getClient(model.client_id);
+        OpenIdConnectProvider.Models.Client client = db.Clients.Where(
+            c => c.ClientID == model.client_id
+        ).FirstOrDefault();
+
         if (client == null) {
             return false;
         }

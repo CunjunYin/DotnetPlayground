@@ -1,5 +1,7 @@
-using OpenIdConnectProvider.Data;
+using OpenIdConnectProvider.Core.DB;
 using OpenIdConnectProvider.Core.Services;
+using Microsoft.EntityFrameworkCore;
+using OpenIdConnectProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +11,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IClients, Clients>();
-builder.Services.AddSingleton<IClientValidator, ClientValidator>();
+builder.Services.AddDbContext<EFCoreInMemoryDb>(o => o.UseInMemoryDatabase("IDPDB"));
+builder.Services.AddTransient<IClientValidator, ClientValidator>();
 
 var app = builder.Build();
 
@@ -20,6 +22,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+InitializeDB.Initialize(app);
 
 app.UseHttpsRedirection();
 

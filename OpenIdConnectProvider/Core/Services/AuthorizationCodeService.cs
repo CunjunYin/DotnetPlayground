@@ -1,10 +1,9 @@
 using System;
 using System.Security.Cryptography;
-using OpenIdConnectProvider.Core.Services;
 
 namespace OpenIdConnectProvider.Core.Services;
 
-public class AuthenticationCode: IAuthenticationCode
+public class AuthorizationCodeService: IAuthenticationCode
 {
     private readonly string _clientId;
     private readonly string _redirectUri;
@@ -12,7 +11,7 @@ public class AuthenticationCode: IAuthenticationCode
     private readonly string _scope;
     private readonly string _userId;
 
-    public AuthenticationCode(string clientId, string redirectUri, string state, string scope, string userId)
+    public AuthorizationCodeService(string clientId, string redirectUri, string state, string scope, string userId)
     {
         _clientId = clientId;
         _redirectUri = redirectUri;
