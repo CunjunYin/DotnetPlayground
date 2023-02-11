@@ -4,6 +4,7 @@ using OpenIdConnectProvider.Core.Types;
 namespace OpenIdConnectProvider.Core;
 
 public class AccessTokenResponse {
+
     [JsonRequired]
     public string access_token { set; get; }
 

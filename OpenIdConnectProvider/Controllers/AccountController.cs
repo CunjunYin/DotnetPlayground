@@ -3,16 +3,16 @@ using OpenIdConnectProvider.Core;
 using OpenIdConnectProvider.Core.Models;
 using OpenIdConnectProvider.Core.Types;
 using OpenIdConnectProvider.Core.Services;
-using OpenIdConnectProvider.Core.DB;
-using OpenIdConnectProvider.Models;
+using OpenIdConnectProvider.Data.Repositories;
+using OpenIdConnectProvider.Data.Models;
 
 namespace OpenIdConnectProvider.Controllers
 {
     public class AccountController : Controller
     {
-        public readonly EFCoreInMemoryDb db;
+        public readonly DatabaseContext db;
         public readonly IClientValidator clientValidator;
-        public AccountController(EFCoreInMemoryDb db, IClientValidator clientValidator)
+        public AccountController(DatabaseContext db, IClientValidator clientValidator)
         {
             this.db = db;
             this.clientValidator = clientValidator;
@@ -63,9 +63,10 @@ namespace OpenIdConnectProvider.Controllers
                     Error = ErrorResponseType.invalid_request,
                     ErrorDescription = errorMessage
                 };
-
                 return BadRequest(errorResponse.GenerateJsonErrorRespose());
             }
+
+            string GUID = db.Users.Where(u => u.Name == user.Username).FirstOrDefault().Guid;
 
             string code = new AuthorizationCodeService(
                 oAuth.client_id,
@@ -84,6 +85,7 @@ namespace OpenIdConnectProvider.Controllers
                 RedirectUri = oAuth.redirect_uri,
                 Nounce = oAuth.nonce,
                 Used = false,
+                UserId = GUID,
                 ExpiresIn = DateTime.UtcNow.AddSeconds(300),
             });
 
