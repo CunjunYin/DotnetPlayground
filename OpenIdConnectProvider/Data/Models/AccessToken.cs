@@ -5,7 +5,7 @@ namespace OpenIdConnectProvider.Data.Models;
 
 public partial class AccessToken
 {
-    public string Id { get; set; } = null!;
+    public int Id { get; set; }
 
     public string? Token { get; set; }
 

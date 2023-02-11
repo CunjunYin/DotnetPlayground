@@ -39,7 +39,8 @@ namespace OpenIdConnectProvider.Controllers
                 };
             }
 
-            if (!clientValidator.isValid(model)){
+            if (!clientValidator.isValid(model))
+            {
                 return new ContentResult()
                 {
                     Content = "Invalid Client",
@@ -53,7 +54,7 @@ namespace OpenIdConnectProvider.Controllers
         [HttpPost(ResourceUris.V1.login)]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login([FromForm]LoginViewModel user, [FromQuery]AuthorizationCodeModel oAuth)
+        public async Task<IActionResult> Login([FromForm] LoginViewModel user, [FromQuery] AuthorizationCodeModel oAuth)
         {
             if (!ModelState.IsValid)
             {
@@ -66,7 +67,12 @@ namespace OpenIdConnectProvider.Controllers
                 return BadRequest(errorResponse.GenerateJsonErrorRespose());
             }
 
-            string GUID = db.Users.Where(u => u.Name == user.Username).FirstOrDefault().Guid;
+            var GUID = db.Users.Where(u => u.Name == user.Username).FirstOrDefault();
+
+            if (GUID == null)
+            {
+                return Unauthorized();
+            }
 
             string code = new AuthorizationCodeService(
                 oAuth.client_id,
@@ -76,18 +82,24 @@ namespace OpenIdConnectProvider.Controllers
                 user.Username
             ).GenerateCode();
 
-            db.AuthenticationCodes.Add( new AuthenticationCode{
-                Code = code,
-                Audience = oAuth.audience,
-                ClientId = oAuth.client_id,
-                ResponseType = oAuth.response_type,
-                Scope = oAuth.scope,
-                RedirectUri = oAuth.redirect_uri,
-                Nounce = oAuth.nonce,
-                Used = false,
-                UserId = GUID,
-                ExpiresIn = DateTime.UtcNow.AddSeconds(300),
-            });
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                db.Add<AuthenticationCode>(new AuthenticationCode
+                {
+                    Code = code,
+                    Audience = oAuth.audience,
+                    ClientId = oAuth.client_id,
+                    ResponseType = oAuth.response_type,
+                    Scope = oAuth.scope,
+                    RedirectUri = oAuth.redirect_uri,
+                    Nounce = oAuth.nonce,
+                    Used = false,
+                    UserId = GUID.Guid,
+                    ExpiresIn = DateTime.UtcNow.AddSeconds(300),
+                });
+                db.SaveChanges();
+                transaction.Commit();
+            }
 
             return Redirect(String.Format(
                 "{0}?code={1}&state={2}",

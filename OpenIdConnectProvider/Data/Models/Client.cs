@@ -5,7 +5,7 @@ namespace OpenIdConnectProvider.Data.Models;
 
 public partial class Client
 {
-    public string Id { get; set; } = null!;
+    public int Id { get; set; }
 
     public string? Guid { get; set; }
 
