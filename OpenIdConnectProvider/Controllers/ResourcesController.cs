@@ -16,6 +16,9 @@ namespace OpenIdConnectProvider.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<String> getResourcesName([FromHeader] ResourcesModel model)
         {
+            // Validate model
+
+            // Query reqources
             return "a";
         }
     }
