@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenIdConnectProvider.Core;
+using OpenIdConnectProvider.Core.Models;
 
 namespace OpenIdConnectProvider.Controllers
 {
@@ -10,12 +11,11 @@ namespace OpenIdConnectProvider.Controllers
 
         }
 
-        [HttpGet(ResourceUris.V1.requestResources)]
+        [HttpGet(ResourceUris.V1.getResourcesName)]
         [ProducesResponseType(StatusCodes.Status303SeeOther)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<String> getResources(string accessToken)
+        public async Task<String> getResourcesName([FromHeader] ResourcesModel model)
         {
-
             return "a";
         }
     }

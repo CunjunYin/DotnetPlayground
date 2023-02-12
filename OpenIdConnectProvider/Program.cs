@@ -15,6 +15,11 @@ builder.Services.AddTransient<IClientValidator, ClientValidator>();
 builder.Services.AddTransient<IClientValidator, ClientValidator>();
 builder.Services.AddTransient<ICodeValidater, CodeValidater>();
 
+
+builder.Services.AddControllers(options => {
+    options.ModelBinderProviders.Insert(0, new AuthorizationHeaderModelBinderProvider());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

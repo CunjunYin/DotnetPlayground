@@ -9,13 +9,16 @@ public class TokenProvider
 {
     public static string accessToken(string subject, string issuer, string audience, long expiresIn)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret_key"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some_secret_key_"));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             issuer: issuer,
             audience: audience,
-            claims: new[] { new Claim("sub", subject) },
+            claims: new[] {
+                new Claim("sub", subject),
+
+            },
             expires: DateTime.Now.AddSeconds(expiresIn),
             signingCredentials: creds
         );
@@ -33,7 +36,7 @@ public class TokenProvider
             throw (new KeyNotFoundException("Code dosent exist"));
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("secret_key"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("some_secret_key_"));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var token = new JwtSecurityToken(
             issuer: "localhost",
@@ -43,6 +46,6 @@ public class TokenProvider
             signingCredentials: creds
         );
 
-        return "";
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

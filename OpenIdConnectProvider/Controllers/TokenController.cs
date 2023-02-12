@@ -44,6 +44,7 @@ namespace OpenIdConnectProvider.Controllers
 
             return new ContentResult(){
                 Content = response.GenerateJsonErrorRespose(),
+                ContentType = "application/json",
                 StatusCode = StatusCodes.Status200OK
             };
         }
